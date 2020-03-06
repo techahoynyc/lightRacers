@@ -10,6 +10,7 @@ Adafruit_NeoPixel pixels(NUMPIXELS, NEOPIN, NEO_GRB + NEO_KHZ800);
 
 uint32_t GREEN1 = pixels.Color(0,255,0); //GREEN1
 uint32_t RED = pixels.Color(64,0,0); //RED
+uint32_t BLUE = pixels.Color(0,0,64); //BLUE
 uint32_t GREEN3 = pixels.Color(0,32,0); //GREEN3
 uint32_t YELLOW = pixels.Color(32,32,0); //YELLOW
 uint32_t OFF = pixels.Color(0,0,0); //OFF
@@ -50,16 +51,20 @@ void readBTLE(int p){
 }
 
 void powerUP(int p[], int p1){
-  for(int i=0;i<pMax;i++){
-    pixels.setPixelColor(p[i],YELLOW);
-    radio.read(&button_state, sizeof(button_state));    //Reading the data
-    if(p[i]==p1){
-      if(button_state == HIGH){
+  radio.read(&button_state, sizeof(button_state));    //Reading the data
+  if(button_state == HIGH){
+    Serial.println("BUTTON PUSHED!");
+    pixels.setPixelColor(p1,RED);
+    for(int i=0;i<pMax;i++){
+      //pixels.setPixelColor(p[i],YELLOW);
+      if(p[i]==p1){ 
+        pixels.setPixelColor(p1,BLUE);
         Serial.println("Grabbed a power-up!");
         pSpeed -= 2;
         Serial.print("Player speed now: ");
         Serial.println(pSpeed);
-        blink();
+        //blink();
+        break;
       }
       //pixels.setPixelColor(p[i],RED);
     }
@@ -75,13 +80,15 @@ void race(){
   pixels.clear();
   for(int p=0;p<5;p++){
     pLEDs[p] = random(0,pixels.numPixels());
+    pixels.setPixelColor(pLEDs[p],YELLOW);
   }
   //powerUP(pLEDs);
   for(int i=0; i<pixels.numPixels(); i++){
+    pixels.setPixelColor(tailLED,OFF);
     pixels.setPixelColor(i,GREEN1);
     powerUP(pLEDs,i);
     // create tail
-    pixels.setPixelColor(tailLED,OFF);
+    
     for(int t=1; t<5; t++){
       pixels.setPixelColor(i-t,GREEN3);
       tailLED = i-t;
