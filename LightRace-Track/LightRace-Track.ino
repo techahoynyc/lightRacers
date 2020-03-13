@@ -4,7 +4,7 @@
 #include <Adafruit_NeoPixel.h>
 
 #define NEOPIN  7
-#define NUMPIXELS 78
+#define NUMPIXELS 220
 
 Adafruit_NeoPixel pixels(NUMPIXELS, NEOPIN, NEO_GRB + NEO_KHZ800);
 
@@ -18,6 +18,7 @@ uint32_t OFF = pixels.Color(0,0,0); //OFF
 
 int pMax = 10; //number of power-up LEDs
 int pSpeed = 100; //speed of player
+int tailLength = 5; //length of tail
 
 
 RF24 radio(9, 10); // CE, CSN
@@ -61,6 +62,7 @@ void powerUP(int p[], int p1){
         pixels.setPixelColor(p1,BLUE);
         Serial.println("Grabbed a power-up!");
         pSpeed -= 2;
+        tailLength += 1;
         Serial.print("Player speed now: ");
         Serial.println(pSpeed);
         //blink();
@@ -87,9 +89,9 @@ void race(){
     pixels.setPixelColor(tailLED,OFF);
     pixels.setPixelColor(i,GREEN1);
     powerUP(pLEDs,i);
-    // create tail
     
-    for(int t=1; t<5; t++){
+    // create tail
+    for(int t=1; t<tailLength; t++){
       pixels.setPixelColor(i-t,GREEN3);
       tailLED = i-t;
     }
