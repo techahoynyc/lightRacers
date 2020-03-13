@@ -10,7 +10,7 @@ boolean buttonPress = 1;
 boolean buttonState;
 int lastButtonState = LOW;
 unsigned long lastDebounceTime = 0;
-unsigned long debounceDelay = 50;
+unsigned long debounceDelay = 10;
 
 int counter = 0; //for debugging
 
